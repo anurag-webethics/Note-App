@@ -7,7 +7,7 @@
     </a>
     <ul class="nav nav-pills flex-column mb-auto ps-4">
         <li class="nav-item  text-left">
-            <a href="{{ route('notes') }}" class="nav-link" aria-current="page">
+            <a href="{{ route('note.index') }}" class="nav-link" aria-current="page">
                 Notes
             </a>
         </li>

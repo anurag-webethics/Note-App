@@ -30,7 +30,7 @@ class ResetDailyInvitationLimit extends Command
 
         $users = User::get();
         foreach ($users as $user) {
-            $user::where('id',$user->id)->update(['invitation_count' => 0]);
+            $user::where('id', $user->id)->update(['invitation_count' => 0]);
         }
     }
 }

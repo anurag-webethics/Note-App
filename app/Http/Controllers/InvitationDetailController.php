@@ -43,35 +43,4 @@ class InvitationDetailController extends Controller
 
         return redirect('register');
     }
-
-
-    public function create()
-    {
-        //
-    }
-
-    public function store(Request $request)
-    {
-        //
-    }
-
-    public function show(InvitationDetail $invitationDetail)
-    {
-        //
-    }
-
-    public function edit(InvitationDetail $invitationDetail)
-    {
-        //
-    }
-
-    public function update(Request $request, InvitationDetail $invitationDetail)
-    {
-        //
-    }
-
-    public function destroy(InvitationDetail $invitationDetail)
-    {
-        //
-    }
 }

@@ -1,10 +1,12 @@
 <x-app-layout>
-
+    @section('title')
+        Notes
+    @endsection
     <div class="container">
         <div class="d-flex justify-content-between" style="width:90%">
             <h1 class="h3">Manage Notes</h1>
             <!-- Button trigger modal -->
-            <a href="{{ route('dashboard') }}" type="button" class="btn btn-success">Add Note</a>
+            <a href="{{ route('note.create') }}" type="button" class="btn btn-success">Add Note</a>
         </div>
 
         <table class="table table-hover" style="width:100%">
@@ -12,6 +14,7 @@
                 <tr>
                     <th scope="col" style="width:10%">Id</th>
                     <th scope="col" style="width:15%">Title</th>
+                    <th scope="col" style="width:15%">Status</th>
                     <th scope="col" style="width:15%">Actions</th>
                 </tr>
             </thead>
@@ -19,14 +22,18 @@
                 @foreach ($notes as $note)
                     <td>{{ $note->id }}</td>
                     <td>{{ $note->title }}</td>
+                    <td>{{ $note->note_type }}</td>
                     <td>
                         {{-- @if (empty($note->note_type === 'public')) --}}
-                        <button class="btn btn-primary me-2"
-                            onclick="window.location.href = '{{ route('note.view', ['id' => Crypt::encrypt($note->id)]) }}'">View</button>
-                        <button class="btn btn-success me-2"
-                            onclick="window.location.href = '{{ route('note.edit', ['id' => $note->id]) }}'">Edit</button>
-                        <a href='{{ route('note.delete', ['id' => $note->id]) }}' class="btn btn-danger"
-                            onclick="return confirm('Are you want to delete the user?')" type='submit'>Delete</a>
+                        <a href="{{ route('note.show', ['note' => $note->id]) }}" class="btn btn-primary me-2">View</a>
+                        <a href="{{ route('note.edit', ['note' => $note->id]) }}" class="btn btn-success me-2">Edit</a>
+                        <form method="POST" action="{{ route('note.destroy', ['note' => $note->id]) }}"
+                            class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger" type="submit"
+                                onclick="return confirm('Are you want to delete the user?')">Delete</button>
+                        </form>
                     </td>
             </tbody>
             @endforeach

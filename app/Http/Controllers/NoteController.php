@@ -12,16 +12,17 @@ use Illuminate\Support\Facades\Crypt;
 class NoteController extends Controller
 {
 
-    public function index(string $id)
+    public function index()
     {
-        $decryptedNotesId =  Crypt::decrypt($id);
-        $note = Note::find($decryptedNotesId);
-        return view('notes.note-view', ['note' => $note]);
+        // $users = User::get();
+        //  'users' => $users;
+        $notes = Note::where('user_id', Auth::user()->id)->get();
+        return view('notes.note-app', ['notes' => $notes]);
     }
 
     public function create()
     {
-        return view('dashboard');
+        return view('notes.note-add', ['note' => null]);
     }
 
     public function store(NoteRequest $request)
@@ -39,52 +40,64 @@ class NoteController extends Controller
                 'share_link' => 'http://note.app.in/public/note/view/' . Crypt::encrypt($CreatedNoteDetail->id),
             ]);
         }
-        return redirect('notes');
+        return redirect('note');
     }
 
-    public function show()
+    public function show($id)
     {
-        $users = User::get();
-        $notes = Note::where('user_id', Auth::user()->id)->get();
-        return view('notes.note-app', ['notes' => $notes, 'users' => $users]);
+        $note = Note::find($id);
+        // if (isset($note) && $note->note_type == 'private') {
+        //     if (isset(Auth::user()->id) && $note->user_id == Auth::user()->id) {
+        //         return view('notes.note-view', ['note' => $note]);
+        //     } else {
+        //         return view('auth.login');
+        //     }
+        // } else {
+        //     return view('notes.note-view', ['note' => $note]);
+        // }
+        if ($note->note_type === 'private') {
+            if ($note->user_id !== auth()->id()) {
+                return redirect()->route('notes.index');
+            }
+        }
+        return view('notes.note-view', ['note' => $note]);
     }
 
     public function edit(string $id)
     {
         $note = Note::find($id);
-        return view('notes.note-edit', ['note' => $note]);
+        // return view('notes.note-edit', ['note' => $note]);
+        return view('notes.note-add', ['note' => $note]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        Note::find($id)->update([
+        $UpdateNoteDetail = Note::find($id);
+        $UpdateNoteDetail->update([
             'title' => $request->title,
             'description' => $request->description,
             'note_type' => $request->note_type,
             'share_link' => 'null',
         ]);
 
-        $UpdateNoteDetail = Note::find($id);
-
         if ($UpdateNoteDetail->note_type == 'public') {
             $UpdateNoteDetail->update([
                 'share_link' => 'http://note.app.in/public/note/view/' . Crypt::encrypt($UpdateNoteDetail->id),
             ]);
         }
-
-        return redirect('notes');
+        return redirect('note');
     }
 
     public function destroy(string $id)
     {
         Note::find($id)->delete();
-        return redirect('notes');
+        return redirect('note');
     }
 
-    public function shareNoteView(string $id)
-    {
-        $decryptedNotesId =  Crypt::decrypt($id);
-        $note = Note::find($decryptedNotesId);
-        return view('notes.note-view-share', ['note' => $note]);
-    }
+    // public function shareNoteView(string $id)
+    // {
+    //     $decryptedNotesId =  Crypt::decrypt($id);
+    //     $note = Note::find($decryptedNotesId);
+    //     return view('notes.note-view-share', ['note' => $note]);
+    // }
 }

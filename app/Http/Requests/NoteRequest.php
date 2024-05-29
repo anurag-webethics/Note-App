@@ -23,7 +23,8 @@ class NoteRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'note_type' => 'required',
         ];
     }
 }

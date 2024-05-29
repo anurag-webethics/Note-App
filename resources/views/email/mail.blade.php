@@ -1,4 +1,7 @@
 <x-app-layout>
+    @section('title')
+    Colleagues
+@endsection
     <span class="text-danger">
         @if (Session::has('error'))
             {{ session::get('error') }}
